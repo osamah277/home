@@ -22,7 +22,8 @@ document.addEventListener("DOMContentLoaded", () => {
     {
       name: "To-Do List",
       url: "https://osamah277.github.io/to-do-list/",
-      image: "./image/todolist.jpg"
+      image: "./image/todolist.jpg",
+      lastUpdated: "2025-06-01 12:35:51" // or whatever date you want
     },
   ];
 
@@ -39,11 +40,27 @@ document.addEventListener("DOMContentLoaded", () => {
       img.alt = project.name;
       img.className = "project-icon";
 
+      // Container for title and last updated stacked vertically
+      const textContainer = document.createElement("div");
+      textContainer.style.display = "flex";
+      textContainer.style.flexDirection = "column";
+
       const span = document.createElement("span");
       span.textContent = project.name;
+      span.style.fontWeight = "bold";
+
+      const lastUpdate = document.createElement("small");
+      lastUpdate.textContent = `Last updated: ${project.lastUpdated}`;
+      lastUpdate.style.fontSize = "0.7em";
+      lastUpdate.style.color = "rgba(255, 255, 255, 0.7)";
+      lastUpdate.style.marginTop = "2px";
+
+      textContainer.appendChild(span);
+      textContainer.appendChild(lastUpdate);
 
       a.appendChild(img);
-      a.appendChild(span);
+      a.appendChild(textContainer);
+
       projectsPanel.appendChild(a);
     });
   }
