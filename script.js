@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
       name: "To-Do List",
       url: "https://osamah277.github.io/to-do-list/",
       image: "./image/todolist.jpg",
-      lastUpdated: "2025-06-02 15:26" // or whatever date you want
+      lastUpdated: "2025-06-02 21:44" // or whatever date you want
     },
   ];
 
