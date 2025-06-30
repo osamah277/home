@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
       name: "Seen It",
       url: "./under-construction.html",
       image: "./image/under-construction.jpeg",
-      lastUpdated: "2025-06-08 12:25" // or whatever date you want
+      lastUpdated: "Under Construction" // or whatever date you want
     },
     {
       name: "To-Do List",
