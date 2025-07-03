@@ -140,20 +140,6 @@ small {
   margin-top: 10px;
 }
 
-@media (max-width: 600px) {
-  body {
-    display: none;
-  }
-
-  body::before {
-    content: "This dashboard is not optimized for mobile devices.";
-    display: block;
-    color: red;
-    text-align: center;
-    padding: 20px;
-  }
-}
-
 #review-section {
   margin-top: 40px;
   background: #f0f0f0;
