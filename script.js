@@ -1,8 +1,27 @@
+const firebaseConfig = {
+  apiKey: "AIzaSyAF8UYfBkX81IJQJGFQKYrPYKuHmFhc4k8",
+  authDomain: "reviews-a0e3f.firebaseapp.com",
+  projectId: "reviews-a0e3f",
+  storageBucket: "reviews-a0e3f.firebasestorage.app",
+  messagingSenderId: "829529427765",
+  appId: "1:829529427765:web:63781103a3c7649964067c",
+  measurementId: "G-TQC5MTNSV5"
+};
+
+// Initialize Firebase app
+firebase.initializeApp(firebaseConfig);
+
+// Initialize Firestore database AFTER app initialization
+const db = firebase.firestore();
+
 document.addEventListener("DOMContentLoaded", () => {
   // DOM elements
   const modeToggleBtn = document.getElementById("mode-toggle");
   const projectsPanel = document.getElementById("projects-panel");
-  
+  const reviewInput = document.getElementById("review-input");
+  const submitReviewBtn = document.getElementById("submit-review");
+  const reviewsList = document.getElementById("reviews-list");
+
   // Light/Dark mode toggle
   modeToggleBtn.addEventListener("click", () => {
     document.body.classList.toggle("dark-mode");
@@ -13,18 +32,18 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // Example Projects
-  const exampleProjects = [ 
+  const exampleProjects = [
     {
       name: "Seen It",
       url: "./under-construction.html",
       image: "./image/under-construction.jpeg",
-      lastUpdated: "Under Construction" // or whatever date you want
+      lastUpdated: "Under Construction"
     },
     {
       name: "To-Do List",
       url: "https://osamah277.github.io/to-do-list/",
       image: "./image/todolist.jpg",
-      lastUpdated: "2025-06-30 00:00" // or whatever date you want
+      lastUpdated: "2025-06-30 00:00"
     },
   ];
 
@@ -41,7 +60,6 @@ document.addEventListener("DOMContentLoaded", () => {
       img.alt = project.name;
       img.className = "project-icon";
 
-      // Container for title and last updated stacked vertically
       const textContainer = document.createElement("div");
       textContainer.style.display = "flex";
       textContainer.style.flexDirection = "column";
@@ -68,23 +86,67 @@ document.addEventListener("DOMContentLoaded", () => {
 
   loadProjects();
 
-  // Open sidebar
-  hamburgerBtn.addEventListener("click", () => {
-    sidebar.classList.add("open");
-    hamburgerBtn.style.visibility = "hidden";
-  });
+  submitReviewBtn.addEventListener("click", async () => {
+    const reviewText = reviewInput.value.trim();
+    if (reviewText === "") return;
 
-  // Close sidebar
-  closeSidebarBtn.addEventListener("click", () => {
-    sidebar.classList.remove("open");
-    hamburgerBtn.style.visibility = "visible";
-  });
+    const reviewData = {
+      author: "Anonymous",
+      text: reviewText,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+    };
 
-  // Optional: Click outside to close sidebar
-  window.addEventListener("click", (e) => {
-    if (!sidebar.contains(e.target) && !hamburgerBtn.contains(e.target)) {
-      sidebar.classList.remove("open");
-      hamburgerBtn.style.visibility = "visible";
+    try {
+      await db.collection("reviews").add(reviewData);
+      reviewInput.value = "";
+    } catch (error) {
+      console.error("Error submitting review:", error);
     }
   });
+
+  function loadReviews() {
+    db.collection("reviews")
+      .orderBy("createdAt", "desc")
+      .onSnapshot((snapshot) => {
+        reviewsList.innerHTML = "";
+
+        snapshot.forEach((doc) => {
+          const data = doc.data();
+          const reviewEntry = document.createElement("div");
+          reviewEntry.className = "review-entry";
+
+          const author = document.createElement("div");
+          author.className = "review-author";
+          author.textContent = data.author || "Anonymous";
+
+          const text = document.createElement("div");
+          text.textContent = data.text || "";
+
+          const time = document.createElement("small");
+          if (data.createdAt?.toDate) {
+            const date = data.createdAt.toDate();
+            time.textContent = `Posted on: ${date.toLocaleString(undefined, {
+              hour12: false,
+              year: 'numeric',
+              month: '2-digit',
+              day: '2-digit',
+              hour: '2-digit',
+              minute: '2-digit',
+              second: '2-digit'
+            })}`;
+            time.style.color = "gray";
+            time.style.fontSize = "0.75em";
+            time.style.marginTop = "4px";
+          }
+
+          reviewEntry.appendChild(author);
+          reviewEntry.appendChild(text);
+          reviewEntry.appendChild(time);
+          reviewsList.appendChild(reviewEntry);
+        });
+      });
+  }
+
+  loadReviews();
+
 });
