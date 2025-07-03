@@ -2,12 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // DOM elements
   const modeToggleBtn = document.getElementById("mode-toggle");
   const projectsPanel = document.getElementById("projects-panel");
-  const sidebar = document.getElementById("sidebar");
-  const closeSidebarBtn = document.getElementById("close-sidebar");
-  const topBar = document.getElementById("top-bar");
-  const hamburgerBtn = document.getElementById("hamburger-btn");
-  const appTitle = document.getElementById("app-title");
-
+  
   // Light/Dark mode toggle
   modeToggleBtn.addEventListener("click", () => {
     document.body.classList.toggle("dark-mode");
