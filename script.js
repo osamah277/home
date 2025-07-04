@@ -88,10 +88,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
   submitReviewBtn.addEventListener("click", async () => {
     const reviewText = reviewInput.value.trim();
-    if (reviewText === "") return;
+    const projectName = document.getElementById("Project-name").value.trim();
+
+    if (reviewText === "" || projectName === "") return;
 
     const reviewData = {
       author: "Anonymous",
+      project: projectName,
       text: reviewText,
       createdAt: firebase.firestore.FieldValue.serverTimestamp(),
     };
@@ -99,53 +102,71 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       await db.collection("reviews").add(reviewData);
       reviewInput.value = "";
+      document.getElementById("Project-name").value = "";
     } catch (error) {
       console.error("Error submitting review:", error);
     }
   });
 
+
   function loadReviews() {
-    db.collection("reviews")
-      .orderBy("createdAt", "desc")
-      .onSnapshot((snapshot) => {
-        reviewsList.innerHTML = "";
+  db.collection("reviews")
+    .orderBy("createdAt", "desc")
+    .onSnapshot((snapshot) => {
+      reviewsList.innerHTML = "";
 
-        snapshot.forEach((doc) => {
-          const data = doc.data();
-          const reviewEntry = document.createElement("div");
-          reviewEntry.className = "review-entry";
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        const reviewEntry = document.createElement("div");
+        reviewEntry.className = "review-entry";
 
-          const author = document.createElement("div");
-          author.className = "review-author";
-          author.textContent = data.author || "Anonymous";
+        // Project Name
+        const project = document.createElement("div");
+        project.className = "review-project";
+        project.textContent = `Project: ${data.project || "Unnamed Project"}`;
+        project.style.fontWeight = "bold";
+        project.style.marginBottom = "6px";
 
-          const text = document.createElement("div");
-          text.textContent = data.text || "";
+        // Review Text
+        const text = document.createElement("div");
+        text.textContent = data.text || "";
 
-          const time = document.createElement("small");
-          if (data.createdAt?.toDate) {
-            const date = data.createdAt.toDate();
-            time.textContent = `Posted on: ${date.toLocaleString(undefined, {
-              hour12: false,
-              year: 'numeric',
-              month: '2-digit',
-              day: '2-digit',
-              hour: '2-digit',
-              minute: '2-digit',
-              second: '2-digit'
-            })}`;
-            time.style.color = "gray";
-            time.style.fontSize = "0.75em";
-            time.style.marginTop = "4px";
-          }
+        // Author + Timestamp container
+        const meta = document.createElement("div");
+        meta.className = "review-meta";
 
-          reviewEntry.appendChild(author);
-          reviewEntry.appendChild(text);
-          reviewEntry.appendChild(time);
-          reviewsList.appendChild(reviewEntry);
-        });
+        // Author
+        const author = document.createElement("div");
+        author.className = "review-author";
+        author.textContent = data.author || "Anonymous";
+
+        // Timestamp
+        const time = document.createElement("div");
+        time.className = "review-time";
+        if (data.createdAt?.toDate) {
+          const date = data.createdAt.toDate();
+          time.textContent = date.toLocaleString(undefined, {
+            hour12: false,
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+          });
+        }
+
+        meta.appendChild(author);
+        meta.appendChild(time);
+
+        // Append all
+        reviewEntry.appendChild(project);
+        reviewEntry.appendChild(text);
+        reviewEntry.appendChild(meta);
+        reviewsList.appendChild(reviewEntry);
       });
-  }
+    });
+}
 
   loadReviews();
 
