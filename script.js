@@ -22,14 +22,38 @@ document.addEventListener("DOMContentLoaded", () => {
   const submitReviewBtn = document.getElementById("submit-review");
   const reviewsList = document.getElementById("reviews-list");
 
-  // Light/Dark mode toggle
-  modeToggleBtn.addEventListener("click", () => {
-    document.body.classList.toggle("dark-mode");
-    document.body.classList.toggle("light-mode");
+  // Light/Dark mode toggle with localStorage
+  function applyThemeFromStorage() {
+   const savedTheme = localStorage.getItem("theme");
 
+    if (savedTheme === "dark") {
+      document.body.classList.add("dark-mode");
+      document.body.classList.remove("light-mode");
+      modeToggleBtn.textContent = "☀️";
+    } else {
+      document.body.classList.add("light-mode");
+      document.body.classList.remove("dark-mode");
+      modeToggleBtn.textContent = "🌙";
+    }
+  }
+  
+  modeToggleBtn.addEventListener("click", () => {
     const isDark = document.body.classList.contains("dark-mode");
-    modeToggleBtn.textContent = isDark ? "☀️" : "🌙";
+    if (isDark) {
+      document.body.classList.remove("dark-mode");
+      document.body.classList.add("light-mode");
+      localStorage.setItem("theme", "light");
+      modeToggleBtn.textContent = "🌙";
+    } else {
+      document.body.classList.remove("light-mode");
+      document.body.classList.add("dark-mode");
+      localStorage.setItem("theme", "dark");
+      modeToggleBtn.textContent = "☀️";
+    }
   });
+
+  // Call this once when page loads
+  applyThemeFromStorage();
 
   // Example Projects
   const exampleProjects = [
