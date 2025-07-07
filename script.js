@@ -34,12 +34,6 @@ document.addEventListener("DOMContentLoaded", () => {
   // Example Projects
   const exampleProjects = [
     {
-      name: "Seen It",
-      url: "./under-construction.html",
-      image: "./image/under-construction.jpeg",
-      lastUpdated: "Under Construction"
-    },
-    {
       name: "To-Do List",
       url: "https://osamah277.github.io/to-do-list/",
       image: "./image/todolist.jpg",
