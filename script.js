@@ -61,7 +61,7 @@ document.addEventListener("DOMContentLoaded", () => {
       name: "To-Do List",
       url: "https://osamah277.github.io/to-do-list/",
       image: "./image/todolist.jpg",
-      lastUpdated: "2025-06-30 00:00"
+      lastUpdated: "2025-07-22 01:44 AM"
     },
   ];
 
